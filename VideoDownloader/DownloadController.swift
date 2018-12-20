@@ -117,8 +117,9 @@ extension DownloadController: DonwLoaderDelegate {
         
         DispatchQueue.main.async {
             self.loadingLabel.hide()
+            self.downloadUrl = nil
         }
-        downloadUrl = nil
+        
     }
     
     func failed() {
