@@ -18,21 +18,6 @@ class ViewController: UITabBarController {
         download.tabBarItem = UITabBarItem.init(title: "ダウンロード", image: nil, tag: 1)
         setViewControllers([videoList, download], animated: false)
     }
-    
-    func cannnotdownloadvideo() {
-        let path = "https://r5---sn-oguesnze.googlevideo.com/videoplayback?mt=1545191192&sparams=clen%2Cdur%2Cei%2Cgir%2Cid%2Cinitcwndbps%2Cip%2Cipbits%2Citag%2Clmt%2Cmime%2Cmm%2Cmn%2Cms%2Cmv%2Cpl%2Cratebypass%2Crequiressl%2Csource%2Cexpire&mv=m&fvip=4&ms=au%2Conr&id=o-ANPDxrHRiNpIcnSj6WIa74HYIqsoVB8GdMLNMiXTmr1r&mime=video%2Fmp4&pl=22&gir=yes&mm=31%2C26&ip=210.226.228.254&key=yt6&mn=sn-oguesnze%2Csn-3pm7dn7s&expire=1545212875&ei=ar8ZXMzpN8eV4ALLxLf4Dw&signature=1DAC82FC9187B264397DB51517B79364A2FEC94E.1655133C48340D28A7588F9CE84C46296CD73220&requiressl=yes&itag=18&source=youtube&initcwndbps=1186250&clen=13749304&dur=214.947&ipbits=0&c=MWEB&txp=2211222&lmt=1544860367280403&ratebypass=yes&cpn=RQVFrYUvzSRZgj3U&cver=2.20181215&ptk=youtube_none&pltype=contentugc"
-        
-        let url = URL.init(string: path)!
-        URLSession.shared.dataTask(with: url) { data, res, error in
-            print(res)
-            
-            print(error)
-            
-            let savepath = NSHomeDirectory() + "/Documents/aaa.mp4"
-            let url = URL.init(fileURLWithPath: savepath)
-            try? data?.write(to: url)
-            }.resume()
-    }
 }
 
 

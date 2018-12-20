@@ -11,8 +11,26 @@ import AVFoundation
 
 final class DownloadController: UIViewController {
     
+    private lazy var toolBar: UIToolbar = {
+        let t = UIToolbar()
+        let backButton = UIBarButtonItem(barButtonSystemItem: .rewind, target: self, action: #selector(actionBack))
+        let nextButton = UIBarButtonItem(barButtonSystemItem: .fastForward, target: self, action: #selector(actionNext))
+        t.items = [backButton, nextButton]
+        return t
+    }()
+    
+    @objc private func actionBack() {
+        webView.goBack()
+    }
+    
+    @objc private func actionNext() {
+        webView.goForward()
+    }
+    
+    private let webView = UIWebView()
+    
     override func viewDidLoad() {
-        let webView = UIWebView()
+        
 //        let url = "https://www.youtube.com/watch?v=wS8VUKFQdTk&feature=youtu.be"
         let url = "https://www.google.com"
         webView.loadRequest(URLRequest(url: URL(string: url)!))
@@ -26,25 +44,33 @@ final class DownloadController: UIViewController {
         downloadButton.backgroundColor = .orange
         view.addSubview(downloadButton)
         
+        
+        
+        loadingLabel.frame = view.bounds
+        view.addSubview(loadingLabel)
+        loadingLabel.hide()
+        
+        
+        view.addSubview(toolBar)
+
         webView.chura.layout
             .left(0).top(view.safeAreaLayoutGuide.topAnchor)
-            .right(0).bottom(anchor: downloadButton.topAnchor, offSet: -5)
+            .right(0).bottom(anchor: toolBar.topAnchor, offSet: -5)
+        
+        
+        toolBar.chura.layout
+            .left(0).right(0)
+            .height(50).bottom(anchor: downloadButton.topAnchor, offSet: -5)
+        
         
         downloadButton.chura
             .layout.left(5).right(-5)
             .bottom(view.safeAreaLayoutGuide.bottomAnchor).height(50)
-        
-        loadingLabel.backgroundColor = UIColor.black.withAlphaComponent(0.9)
-        loadingLabel.frame = view.bounds
-        loadingLabel.textColor = .white
-        loadingLabel.font = .systemFont(ofSize: 50)
-        loadingLabel.text = "start download"
-        view.addSubview(loadingLabel)
-        loadingLabel.isHidden = true
+
     }
     
     private let downloadButton = UIButton()
-    private var loadingLabel = UILabel()
+    private var loadingLabel = DownloadProgressView()
     
     @objc private func actionDownload() {
         loadingLabel.isHidden = false
@@ -81,7 +107,7 @@ final class DownloadController: UIViewController {
 extension DownloadController: DonwLoaderDelegate {
     
     func updateProgress(to: Float) {
-        loadingLabel.text = "progress in \(to)"
+        loadingLabel.updateProgress(to: to)
     }
     
     func sucess(location: URL) {
@@ -89,7 +115,9 @@ extension DownloadController: DonwLoaderDelegate {
         let path = NSHomeDirectory() + "/Documents/\(UUID().uuidString).mp4"
         try! data.write(to: URL(fileURLWithPath: path))
         
-        loadingLabel.isHidden = true
+        DispatchQueue.main.async {
+            self.loadingLabel.hide()
+        }
         downloadUrl = nil
     }
     
@@ -98,4 +126,17 @@ extension DownloadController: DonwLoaderDelegate {
     }
 }
 
+
+
+
+protocol ApplySwift {}
+
+extension ApplySwift {
+    func apply(closure: (Self) -> Swift.Void) -> Self {
+        closure(self)
+        return self
+    }
+}
+
+extension NSObject: ApplySwift { }
 

@@ -17,7 +17,7 @@ final class VideoListController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(tableView)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(VideoListCell.self, forCellReuseIdentifier: "cell")
         tableView.frame = view.bounds
         tableView.delegate = self
         tableView.dataSource = self
@@ -28,7 +28,7 @@ final class VideoListController: UIViewController {
         tableView.setEditing(editing, animated: animated)
     }
     
-    private var videos: [String] = []
+    private var videos: [VideoData] = []
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -38,16 +38,21 @@ final class VideoListController: UIViewController {
     func loadLocalVideo() {
         let documentPath = NSHomeDirectory() + "/Documents"
         if let items = try? FileManager.default.contentsOfDirectory(atPath: documentPath) {
-            videos = items
+            videos = items.map { VideoData(filePath: NSHomeDirectory() + "/Documents/" + $0 ) }
         }
+        tableView.reloadData()
     }
 }
 
 extension VideoListController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let c = ShowVideoController(filePath: NSHomeDirectory() + "/Documents/" + videos[indexPath.row])
+        let c = ShowVideoController(filePath: videos[indexPath.row].filePath)
         present(c, animated: true, completion: nil)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return VideoListCell.height
     }
 }
 
@@ -58,8 +63,10 @@ extension VideoListController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = videos[indexPath.row]
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? VideoListCell else {
+            fatalError("not video list cell")
+        }
+        cell.configure(video: videos[indexPath.row])
         return cell
     }
 }
