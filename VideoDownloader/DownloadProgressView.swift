@@ -37,9 +37,9 @@ final class DownloadProgressView: UIView {
             .centerY(0).centerX(20)
             .width(250).height(40)
         
-        indicator.chura.layout
-            .right(label.leftAnchor).width(50)
-            .height(50).centerY(label.centerYAnchor)
+//        indicator.chura.layout
+//            .right(label.leftAnchor).width(50)
+//            .height(50).centerY(label.centerYAnchor)
         
         progress.chura.layout
             .left(40).right(-40)
